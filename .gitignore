@@ -133,3 +133,5 @@ dist
 .env
 config.json
 test.js
+server.cert
+server.key

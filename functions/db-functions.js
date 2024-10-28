@@ -69,8 +69,10 @@ async function createChat(modelName, chatName) {
 			}
 		}
 		console.log("creating chat");
+		console.log(chatName, modelName)
 		await db.createCollection(chatName);
 		await chatCollection.insertOne({
+			ChatId: chatName, 
 			Title : chatName,
 			Model: modelName,
 		})
@@ -236,7 +238,7 @@ async function getModelFromChat(chatName) {
 }
 
 async function getChatList() {
-	const chatList = await chatCollection.find({}).project({Title:1, _id:0}).toArray();
+	const chatList = await chatCollection.find({}).project({_id:0}).toArray();
 	return chatList;
 }
 

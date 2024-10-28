@@ -62,7 +62,8 @@ async function chat(chatName, message) {
 
 async function createChat(modelName) {
   try {
-    var chatName = uuid.v4();
+    var chatName = await uuid.v1();
+    console.log("chatname");
     if (dbFunctions.checkIfChatExists(chatName)) {
       var output = await dbFunctions.createChat(modelName, chatName);
       if (output.success == false) {
