@@ -1,17 +1,17 @@
-const express = require('express');
-const dbFunctions = require('./functions/db-functions');
-const llm = require('./functions/llm-functions');
-const Ollama = require("ollama");
-const llweb = require("./functions/llama-web");
-const cors = require('cors');
-const ngrok = require('ngrok');
+import express from "express"
+import * as dbFunctions from './functions/db-functions.js';
+import * as llm from './functions/llm-functions.js';
+import { Ollama } from "ollama";
+import * as llweb from "./functions/llama-web.js";
+import cors from 'cors';
+import ngrok from 'ngrok';
 
 const app = express();
 
 
 async function run() {
   var url = "";
-  const ollama = new Ollama.Ollama();
+  const ollama = new Ollama();
   dbFunctions.initializeDB();
   dbFunctions.updateModelList();
   const data = await llweb.loadConfig();
@@ -73,12 +73,94 @@ app.use(cors({
   credentials: true,
 }));
 
-
+// Debugging ALL port
 app.post('/', (req, res) => {
   console.log("GET request received");
-  console.log(req.body);
   if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
     res.json({success: true});
+  } else {
+    res.json({success: false});
+  }
+})
+
+// Route to retrieve Model list
+app.post('/modellist', async (req,res) => {
+  console.log("retrieving model list")
+  var modelList = await llm.getModelList();
+  if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
+    res.json({
+      success: true,
+      list: modelList
+    });
+  } else {
+    res.json({success: false});
+  }
+})
+
+// Route to retrieve Chat List
+app.post('/chatlist', async (req,res) => {
+  console.log("retrieving chat list")
+  var chatList = await llm.getChatList();
+  if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
+    res.json({
+      success: true,
+      list: chatList
+    });
+  } else {
+    res.json({success: false});
+  }
+})
+
+// Route to create a new Chat
+app.post('/createchat', async (req,res) => {
+  console.log("creating new chat")
+  if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
+    const response = await llm.createChat(req.body.model);
+    if (response.success == true) {
+      console.log({
+        sucess:true,
+        chatId:response.id
+      })
+      res.json({
+        sucess:true,
+        chatId:response.id
+      });
+    } else {
+      console.log("failed for somereason")
+      res.json({
+        success: false
+      });
+    }
+  } else {
+    res.json({success: false});
+  }
+})
+
+app.post('/chathistory', async (req, res) => {
+  console.log('getting chat history');
+  if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
+    const history = await llm.getChatHistory(req.body.chatid);
+    if (history.success == true) {
+      console.log({
+        success: true,
+        length: chathistory.length
+      })
+      res.json({
+        success: true,
+        chathistory: history
+      });
+    } else {
+      console.log("failed for somereason")
+      res.json({})
+    }
+  } else {
+    res.json({success: false});
+  }
+})
+
+app.post('/chat', async (req,res) => {
+  if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
+    
   } else {
     res.json({success: false});
   }

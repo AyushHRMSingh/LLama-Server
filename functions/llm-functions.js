@@ -1,8 +1,8 @@
-const dbFunctions = require('./db-functions');
-const Ollama = require("ollama")
-const uuid = require("uuid");
+import * as dbFunctions from './db-functions.js';
+import { Ollama } from "ollama";
+import * as uuid from "uuid";
 
-const ollama = new Ollama.Ollama();
+const ollama = new Ollama();
 
 async function chat(chatName, message) {
   try {
@@ -92,8 +92,9 @@ async function createChat(modelName) {
 };
 
 async function getModelList() {
-  data = await ollama.list();
-  modelarr = []
+  var data = await ollama.list();
+  var modelarr = []
+  console.log("datawhoa");
   console.log(data);
   for (var i in data["models"]) {
     modelarr.push({
@@ -108,6 +109,8 @@ async function getModelList() {
 async function getChatList() {
   try {
     var chatList = await dbFunctions.getChatList();
+    console.log("chatList FOUND")
+    console.log(chatList)
     return chatList;
   } catch (e) {
     console.log(e)
@@ -118,10 +121,13 @@ async function getChatList() {
   }
 }
 
-async function getChatHistory(chatname) {
+async function getChatHistory(chatid) {
   try {
-    var chatHistory = await dbFunctions.getChatHistory(chatname);
-    return chatHistory;
+    var chatHistory = await dbFunctions.getChatHistory(chatid);
+    return {
+      success:true,
+      output: chatHistory,
+    }
   } catch (e) {
     console.log(e)
     return {
@@ -131,6 +137,6 @@ async function getChatHistory(chatname) {
   }
 }
 
-module.exports = { createChat, chat, getModelList, getChatList, getChatHistory };
+// module.exports = { createChat, chat, getModelList, getChatList, getChatHistory };
 
-
+export { createChat, chat, getModelList, getChatList, getChatHistory };

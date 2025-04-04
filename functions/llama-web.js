@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-const fs = require('fs');
+import crypto from 'crypto';
+import fs from 'fs';
 
 // Path to the configuration file
 const configPath = 'config.json';
@@ -86,4 +86,5 @@ function update(url) {
   
 };
 
-module.exports = { loadConfig, register, update, loadConfig, updateApiAccessToken };
+// module.exports = { loadConfig, register, update, loadConfig, updateApiAccessToken };
+export { loadConfig, register, update, updateApiAccessToken };
