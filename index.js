@@ -138,17 +138,17 @@ app.post('/createchat', async (req,res) => {
 
 app.post('/chathistory', async (req, res) => {
   console.log('getting chat history');
+  console.log(req.body.chatid);
   if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
     const history = await llm.getChatHistory(req.body.chatid);
+    const chathistory = history.output;
     if (history.success == true) {
-      console.log({
+      const returnval = {
         success: true,
-        length: chathistory.length
-      })
-      res.json({
-        success: true,
-        chathistory: history
-      });
+        chathistory: chathistory
+      }
+      console.log(returnval.chathistory);
+      res.json(returnval);
     } else {
       console.log("failed for somereason")
       res.json({})

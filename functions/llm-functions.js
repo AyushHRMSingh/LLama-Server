@@ -124,6 +124,8 @@ async function getChatList() {
 async function getChatHistory(chatid) {
   try {
     var chatHistory = await dbFunctions.getChatHistory(chatid);
+    console.log("chatHistoryllm");
+    console.log(chatHistory);
     return {
       success:true,
       output: chatHistory,

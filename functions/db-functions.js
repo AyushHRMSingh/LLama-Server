@@ -238,10 +238,13 @@ async function getChatList() {
 
 async function getChatHistory(chatid) {
 	var colhistory = []
+	var num = -1
 	colhistory = (await db.collection(chatid).find({}).project({_id:0}).toArray()).map(i => {
+		num = num + 1;
 		return {
-			role:i["usertype"],
-			content:i["message"],
+			id:num,
+			sender:i["usertype"],
+			message:i["message"],
 		}
 	})
 	return colhistory
