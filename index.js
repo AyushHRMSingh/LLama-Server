@@ -126,7 +126,7 @@ app.post('/createchat', async (req,res) => {
         chatId:response.id
       });
     } else {
-      console.log("failed for somereason")
+      console.log("createchat failed for somereason")
       res.json({
         success: false
       });
@@ -150,7 +150,7 @@ app.post('/chathistory', async (req, res) => {
       console.log(returnval.chathistory);
       res.json(returnval);
     } else {
-      console.log("failed for somereason")
+      console.log("chathistory failed for somereason")
       res.json({})
     }
   } else {
@@ -160,7 +160,20 @@ app.post('/chathistory', async (req, res) => {
 
 app.post('/chat', async (req,res) => {
   if (req.body.accessToken && confirmAccess(req.body.accessToken)) {
-    
+    const response = await llm.chat(req.body.chatid, req.body.message);
+    const output = response.output;
+    if (response.success == true) {
+      const returnval = {
+        success: true,
+        output: output
+      }
+      console.log(returnval);
+      res.json(returnval);
+    } else {
+      console.log("chat failed for somereason");
+      console.log(response);
+      res.json({});
+    }
   } else {
     res.json({success: false});
   }
