@@ -136,3 +136,4 @@ test.js
 server.cert
 server.key
 SelhoLLama.db
+.webui_secret_key
